@@ -1,38 +1,15 @@
-require 'fileutils'
-require 'maruku'
+require 'JSON'
 
-desc "Build HTML pages"
-task :build_pages do
-	input_folder = 'tingkat/'
-  input_extension = '.md'
-	output_folder = 'build/'
-	output_extension = '.html'
+desc "Output JSON of level list"
+task :output_levels_as_json do
+  list = []
+  Dir['source/tingkat/*'].each do |path1|
+    Dir[path1 + '/*'].each do |path2|
+      list << (path2.split('source/').last.split('.md').first + '.html')
+    end
+  end
 
-	Dir["#{input_folder}*/*#{input_extension}"].each do |input_file_name|
-		output_file_name = input_file_name.sub(input_folder, output_folder)
-		output_file_name.sub!(input_extension, output_extension)
-
-		FileUtils.mkdir_p output_file_name.split('/')[0...-1].join('/')
-
-    content = File.read input_file_name
-    puts "Converting Markdown to HTML: #{input_file_name} => #{output_file_name}"
-		File.open(output_file_name, 'w') do |f|
-			f.write Maruku.new(content).to_html
-		end
-	end
-end
-
-desc "Push HTML pages to GitHub"
-task :push_pages do
-	remote = 'https://github.com/catcyborg/tingkat-coba-ruby-draft.git'
-	branch = 'gh-pages'
-
-	`cd build;
-	git init;
-	git add .;
-	git remote add origin #{remote};
-	git commit -am 'Update at #{Time.now}';
-	git checkout -b #{branch};
-	git rebase master;
-	git push -u origin #{branch}`
+  File.open('source/levels.json', 'w') do |f|
+    f.write JSON.generate levels: list
+  end
 end

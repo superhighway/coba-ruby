@@ -1,0 +1,2 @@
+#!/bin/bash
+bundle exec rake output_levels_as_json && middleman build && middleman deploy
