@@ -10,12 +10,6 @@ unless window.console and console.log
 
 hasHistorySupport = -> !!(window.history && history.pushState)
 
-$('.btn-cta-coba-ruby').click ->
-  if hasHistorySupport()
-    console.log "hello"
-  else
-    console.log "boo"
-
 setEditorValue = (snippet) ->
   if window.ace and editor?
     editor.getSession().setValue snippet
@@ -31,22 +25,31 @@ if window.ace
   editor = ace.edit("code-editor")
   editor.setTheme "ace/theme/solarized_light"
   editor.getSession().setMode "ace/mode/ruby"
-$body = $("body")
-evalURL = "http://mengenal-ruby-eval.herokuapp.com"
 
-# evalURL = 'http://localhost:4000',
+
+$body = $("body")
+$loadingIndicator = $ '#loading-indicator'
+# evalURL = "http://mengenal-ruby-eval.herokuapp.com"
+evalURL = 'http://localhost:4000'
 snippetRequestError = $("#snippet-request-error-template").text()
 $runner = $("#snippet-runner")
 $("#snippet-request-error-template").remove()
 $(".btn-run").click ->
   $outputTarget = $("#run-output")
   snippet = getEditorValue()
-  spinner.spin spinnerEl
-  $.post(evalURL,
-    snippet: snippet
-  , (data, textStatus, xhr) ->
-    spinner.stop spinnerEl
-    $outputTarget.text data
-  ).fail ->
-    spinner.stop spinnerEl
-    $outputTarget.text snippetRequestError
+  $loadingIndicator.text "Memproses jawaban..."
+  if challengeCanBeAnswered
+    $.post(evalURL + "/coba-ruby.json", snippet: snippet, challenge_path: challengePath
+    , (data, textStatus, xhr) ->
+      $loadingIndicator.text ""
+      $outputTarget.text data.output
+    ).fail ->
+      $loadingIndicator.text ""
+      $outputTarget.text snippetRequestError
+  else
+    $.post(evalURL, snippet: snippet, (data, textStatus, xhr) ->
+      $loadingIndicator.text ""
+      $outputTarget.text data
+    ).fail ->
+      $loadingIndicator.text ""
+      $outputTarget.text snippetRequestError

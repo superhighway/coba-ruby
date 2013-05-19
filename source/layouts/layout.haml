@@ -4,23 +4,29 @@
     %title CobaRuby
     = stylesheet_link_tag    "style", :media => "all"
   %body
-    .pane.pane-left
-      .header
-        %h1 Coba Ruby
-      = yield
-      .back
-        Kembali ke
-        = link_to "Ruby Indonesia", 'http://id-ruby.org/'
-    .pane.pane-right
-      #code-editor
-      .code-tools
-        = link_to "JALANKAN", '#', class: "btn-run"
-        .code-output
-          %h3 Output
-          %pre
-            %code
-              Ini Output
-    .clearfix
+    .header
+      %h1 Coba Ruby, Yuk!
+      %span
+        Atau Kembali ke
+        = link_to "Ruby Indonesia", 'http://id-ruby.org/', target: "_blank"
+    .panes
+      .pane.pane-left
+        = yield
+        - if (challenge_path = current_page.data["challenge_path"])
+          :javascript
+            window.challengePath = "#{challenge_path}";
+            window.challengeCanBeAnswered = #{challenge_path != "01/00"};
+      .pane.pane-right
+        #code-editor
+        .code-tools
+          .btn-run-wrapper
+            = link_to "Jalankan", '#', class: "btn-run"
+          .code-output
+            %h4 Output
+            %pre
+              %code#run-output
+      .clearfix
+    %script(type="text/plain" id="snippet-request-error-template")Ups! Maaf, lagi error... Coba lagi nanti, atau kontak thecatcyborg+jpruby@gmail.com melalui email. Terima kasih!
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"
     = javascript_include_tag "http://nyan.catcyb.org/mengenal-ruby/js/vendor/editor/ace.js", charset: "utf-8"
     = javascript_include_tag "all"
