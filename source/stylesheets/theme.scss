@@ -5,13 +5,12 @@
 body {
   background: #fff;
   font: 18px/1.6em Georgia, Palatino, "Palatino MT", "Book Antiqua", "Times New Roman", Times, serif;
-  color: #666;
+  color: #333;
 }
 
 p {
   line-height: 150%;
   font-weight: 400;
-  color: #333;
 }
 
 h1, h2, h3, h4 {
@@ -19,7 +18,7 @@ h1, h2, h3, h4 {
   font-weight: 400;
 }
 
-h2, h3, h4, h5, p {
+h2, h3, h4, h5, p, ul, ol {
   margin-bottom: 0.7em;
   padding: 0;
 }
@@ -70,7 +69,7 @@ a {
 
 ul, ol {
   padding: 0;
-  margin: 0px 0px 0px 50px;
+  margin-left: 1em;
 }
 ul {
   list-style-type: square;
@@ -79,9 +78,6 @@ ul {
 
 li {
   line-height:150%    
-}
-li ul, li ul {
-  margin-left: 24px;
 }
 
 pre {
@@ -189,25 +185,33 @@ a.btn-run {
   color: #cba;
 }
 
-#cta-coba-ruby div {
+.cta-with-btn {
   margin: 0; padding: 0;
   text-align: center;
   font-size: 0.9em;
   color: #321;
 }
 
-a.btn-cta-coba-ruby {
+a.btn-cta {
   display: block;
   font-size: 1.4em;
   text-align: center;
-  background: #bc0005;
   margin: 0;
   padding: 0.7em;
-  color: #fff !important;
-  font-variant:small-caps;
+  color: #fff;
+  font-variant: small-caps;
   text-decoration: none;
-  
-  &:hover {
-    background: lighten(#bc0005, 10%);
-  }
+}
+
+@mixin btn-background($color) {
+  background: $color;
+  &:hover { background: lighten($color, 10%); }
+}
+
+a.btn-cta-coba-ruby {
+  @include btn-background(#ef0006);
+}
+
+a.btn-cta-selanjutnya {
+  @include btn-background(#3849f8);
 }
