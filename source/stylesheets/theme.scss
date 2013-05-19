@@ -13,7 +13,7 @@ p {
   font-weight: 400;
 }
 
-p code {
+p code, li code {
   background: #fedcba;
   padding: 0.3em 0.8em;
 }
@@ -87,7 +87,6 @@ li {
 
 pre {
   max-width: 800px;
-  white-space: pre-wrap;
 }
 code, #code-editor {
   font-family: Monaco, Consolas, Andale Mono, monospace;
