@@ -16,6 +16,9 @@
           :javascript
             window.challengePath = "#{challenge_path}";
             window.challengeCanBeAnswered = #{challenge_path != "01/00"};
+        - if (manual_continue = current_page.data["manual_continue"] == true)
+          :javascript
+            window.manualContinue = #{manual_continue};
       .pane.pane-right
         #code-editor
         .code-tools
