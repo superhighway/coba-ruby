@@ -4,6 +4,12 @@
 
 # Time.zone = "UTC"
 
+if ENV["DEPLOY"]
+  set :asset_root, "http://nyan.catcyb.org/coba-ruby"
+else
+  set :asset_root, "http://localhost:4567"
+end
+
 activate :deploy do |deploy|
   deploy.method = :git
   deploy.remote = "https://github.com/catcyborg/coba-ruby.git"
