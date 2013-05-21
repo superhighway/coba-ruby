@@ -6,8 +6,12 @@
 
 if ENV["DEPLOY"]
   set :asset_root, "http://nyan.catcyb.org/coba-ruby"
+  set :challenge_root, "http://nyan.catcyb.org/coba-ruby/tingkat"
+  set :ruby_eval_root, "http://mengenal-ruby-eval.herokuapp.com"
 else
   set :asset_root, "http://localhost:4567"
+  set :challenge_root, "http://localhost:4567/tingkat"
+  set :ruby_eval_root, "http://localhost:4000"
 end
 
 activate :deploy do |deploy|

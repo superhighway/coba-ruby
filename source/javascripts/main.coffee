@@ -1,3 +1,16 @@
+challengePath = ''
+challengeAnswerable = false
+
+updateChallenge = ->
+  challengePath = ''
+  challengeAnswerable = false
+  $jsChallenge = $('#js-challenge')
+  if $jsChallenge?
+    challengePath = $jsChallenge.data('path')
+    challengeAnswerable = $jsChallenge.data('answerable')
+
+updateChallenge()
+
 unless window.console and console.log
   (->
     noop = ->
@@ -26,28 +39,61 @@ if window.ace
   editor.setTheme "ace/theme/solarized_light"
   editor.getSession().setMode "ace/mode/ruby"
 
+popstateIsBoundToWindow = false
+navigateToChallengeURL = (challengeURL) ->
+  if hasHistorySupport()
+    unless popstateIsBoundToWindow
+      popstateIsBoundToWindow = true
+      $(window).on 'popstate', (e) ->
+        navigateToChallengeURL window.location.href
+
+    $.get challengeURL, {}, (data, textStatus, xhr) ->
+      questionId = "#js-question"
+      $question = $(questionId)
+      updateChallengeContent = ->
+        $data = $(data)
+        $question.html $data.find(questionId).html()
+        updateChallenge()
+        history.pushState {}, $data.find('title').text(), challengeURL
+
+      if $.support.transition
+        $question.transition opacity: 0, scale: 0.9, 350, 'out', ->
+          updateChallengeContent()
+          $question.transition opacity: 1, scale: 1, 400, 'out'
+      else
+        updateChallengeContent()
+  else
+    window.location.href = challengeURL
+
+navigateToChallengePath = (challengePath) ->
+  navigateToChallengeURL [challengeRoot, challengePath].join('/') + ".html"
 
 $body = $("body")
 $loadingIndicator = $ '#loading-indicator'
-# evalURL = "http://mengenal-ruby-eval.herokuapp.com"
-evalURL = 'http://localhost:4000'
 snippetRequestError = $("#snippet-request-error-template").text()
 $runner = $("#snippet-runner")
 $("#snippet-request-error-template").remove()
+
+if hasHistorySupport()
+  $(".js-challenge-link").click ->
+    navigateToChallengeURL $(this).attr('href')
+    return false
+
 $(".btn-run").click ->
   $outputTarget = $("#run-output")
   snippet = getEditorValue()
   $loadingIndicator.text "Memproses jawaban..."
-  if challengeCanBeAnswered
-    $.post(evalURL + "/coba-ruby.json", snippet: snippet, challenge_path: challengePath
-    , (data, textStatus, xhr) ->
+  if challengeAnswerable
+    $.post(rubyEvalRoot + "/coba-ruby.json", snippet: snippet, challenge_path: challengePath, (data, textStatus, xhr) ->
+      if data.is_correct
+        navigateToChallengePath data.next_challenge_path
       $loadingIndicator.text ""
       $outputTarget.text data.output
     ).fail ->
       $loadingIndicator.text ""
       $outputTarget.text snippetRequestError
   else
-    $.post(evalURL, snippet: snippet, (data, textStatus, xhr) ->
+    $.post(rubyEvalRoot, snippet: snippet, (data, textStatus, xhr) ->
       $loadingIndicator.text ""
       $outputTarget.text data
     ).fail ->
