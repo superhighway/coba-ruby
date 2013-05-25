@@ -144,7 +144,7 @@ a.btn-run {
 }
 
 .panes {
-  margin-top: 2.6em;
+  margin: 2.6em 0;
 }
 
 .pane {
@@ -201,12 +201,17 @@ a.btn-run {
   color: #321;
 }
 
+#code-prefill {
+  display: none;
+}
+
 a.btn-cta {
   display: block;
   font-size: 1.4em;
   text-align: center;
   margin: 0;
-  padding: 0.7em;
+  height: 2.4em;
+  line-height: 2.4em;
   color: #fff;
   font-variant: small-caps;
   text-decoration: none;

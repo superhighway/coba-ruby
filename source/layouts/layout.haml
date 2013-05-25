@@ -11,11 +11,14 @@
         = link_to "Ruby Indonesia", 'http://id-ruby.org/', target: "_blank"
         \/
         = link_to "Mengenal Ruby", 'http://nyan.catcyb.org/mengenal-ruby/', target: "_blank"
-    .panes
+    .panes.clearfix
       #js-question.pane.pane-left
-        = yield
         - if (challenge_path = current_page.data["challenge_path"])
+          = preserve do
+            = yield
           %span#js-challenge{ "data-path" => challenge_path, "data-answerable" => (!current_page.data["manual_continue"]).to_s }
+        - else
+          = yield
       .pane.pane-right
         #code-editor
         .code-tools
@@ -25,7 +28,6 @@
             %h4 Output
             %pre
               %code#run-output
-      .clearfix
     %script(type="text/plain" id="snippet-request-error-template") Ups! Maaf, lagi error... Coba lagi nanti, atau kontak thecatcyborg+jpruby@gmail.com melalui email. Terima kasih!
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"
     = javascript_include_tag "http://nyan.catcyb.org/mengenal-ruby/js/vendor/editor/ace.js", charset: "utf-8"

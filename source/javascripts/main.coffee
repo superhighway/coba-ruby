@@ -1,16 +1,5 @@
-challengePath = ''
-challengeAnswerable = false
-
-updateChallenge = ->
-  challengePath = ''
-  challengeAnswerable = false
-  $jsChallenge = $('#js-challenge')
-  if $jsChallenge?
-    challengePath = $jsChallenge.data('path')
-    challengeAnswerable = $jsChallenge.data('answerable')
-
-updateChallenge()
-
+# Extensions
+unless String::trim then String::trim = -> @replace /^\s+|\s+$/g, ""
 unless window.console and console.log
   (->
     noop = ->
@@ -21,81 +10,114 @@ unless window.console and console.log
     console[methods[length]] = noop  while length--
   )()
 
-hasHistorySupport = -> !!(window.history && history.pushState)
 
-setEditorValue = (snippet) ->
-  if window.ace and editor?
-    editor.getSession().setValue snippet
-  else
-    $("#snippet-runner-code-content").html "<pre>" + snippet + "</pre>"
-getEditorValue = ->
-  if window.ace and editor?
-    editor.getSession().getValue()
-  else
-    $("#snippet-runner-code-content").text()
-editor = null
-if window.ace
-  editor = ace.edit("code-editor")
-  editor.setTheme "ace/theme/solarized_light"
-  editor.getSession().setMode "ace/mode/ruby"
+
+# History Support
+HistorySupportAvailable = -> !!(window.history && history.pushState)
+
+
+
+# Challenge
+challengePath = ''
+challengeAnswerable = false
+ChallengeInitialize = ->
+  challengePath = ''
+  challengeAnswerable = false
+  $jsChallenge = $('#js-challenge')
+  if $jsChallenge? && $jsChallenge.length > 0
+    challengePath = $jsChallenge.data('path')
+    challengeAnswerable = $jsChallenge.data('answerable')
+  $challengeCodePrefill = $ '#code-prefill'
+  if $challengeCodePrefill? && $challengeCodePrefill.length > 0
+    SnippetEditorSetValue $challengeCodePrefill.text().trim() + "\n# Ketik jawaban di bawah ini\n"
+  if HistorySupportAvailable()
+    $(".js-challenge-link").on 'click', ->
+      ChallengeNavigateToURL $(this).attr('href')
+      return false
 
 popstateIsBoundToWindow = false
-navigateToChallengeURL = (challengeURL) ->
-  if hasHistorySupport()
+ChallengeNavigateToURL = (challengeURL) ->
+  if HistorySupportAvailable()
     unless popstateIsBoundToWindow
       popstateIsBoundToWindow = true
       $(window).on 'popstate', (e) ->
-        navigateToChallengeURL window.location.href
+        ChallengeNavigateToURL window.location.href
 
     $.get challengeURL, {}, (data, textStatus, xhr) ->
       questionId = "#js-question"
       $question = $(questionId)
-      updateChallengeContent = ->
+      ChallengeContentUpdate = ->
         $data = $(data)
         $question.html $data.find(questionId).html()
-        updateChallenge()
+        ChallengeInitialize()
         history.pushState {}, $data.find('title').text(), challengeURL
 
       if $.support.transition
         $question.transition opacity: 0, scale: 0.9, 350, 'out', ->
-          updateChallengeContent()
+          ChallengeContentUpdate()
           $question.transition opacity: 1, scale: 1, 400, 'out'
       else
-        updateChallengeContent()
+        ChallengeContentUpdate()
   else
     window.location.href = challengeURL
 
-navigateToChallengePath = (challengePath) ->
-  navigateToChallengeURL [challengeRoot, challengePath].join('/') + ".html"
+ChallengeNavigateToPath = (challengePath) ->
+  ChallengeNavigateToURL [challengeRoot, challengePath].join('/') + ".html"
 
+
+
+# Snippet Editor
+editor = null
+editorInitialized = false
+SnippetEditorSetValue = (snippet) ->
+  if editorInitialized
+    editor.getSession().setValue snippet
+  else
+    $("#snippet-runner-code-content").html "<pre>" + snippet + "</pre>"
+SnippetEditorGetValue = ->
+  if editorInitialized
+    editor.getSession().getValue()
+  else
+    $("#snippet-runner-code-content").text()
+SnippetEditorInitialize = ->
+  if window.ace
+    editor = ace.edit("code-editor")
+    editor.setTheme "ace/theme/solarized_light"
+    editor.getSession().setMode "ace/mode/ruby"
+    editorInitialized = true
+
+
+
+# Initialize Elements
 $body = $("body")
 $loadingIndicator = $ '#loading-indicator'
 snippetRequestError = $("#snippet-request-error-template").text()
 $runner = $("#snippet-runner")
 $("#snippet-request-error-template").remove()
 
-if hasHistorySupport()
-  $(".js-challenge-link").click ->
-    navigateToChallengeURL $(this).attr('href')
-    return false
+SnippetEditorInitialize()
+ChallengeInitialize()
 
-$(".btn-run").click ->
+$(".btn-run").on 'click', ->
   $outputTarget = $("#run-output")
-  snippet = getEditorValue()
-  $loadingIndicator.text "Memproses jawaban..."
+  snippet = SnippetEditorGetValue()
+  $loadingIndicator.text "Memproses..."
+
+  OutputErrorShow = ->
+    $loadingIndicator.text ""
+    $outputTarget.text snippetRequestError
+
   if challengeAnswerable
     $.post(rubyEvalRoot + "/coba-ruby.json", snippet: snippet, challenge_path: challengePath, (data, textStatus, xhr) ->
       if data.is_correct
-        navigateToChallengePath data.next_challenge_path
+        ChallengeNavigateToPath data.next_challenge_path
+
       $loadingIndicator.text ""
       $outputTarget.text data.output
-    ).fail ->
-      $loadingIndicator.text ""
-      $outputTarget.text snippetRequestError
+    ).fail OutputErrorShow
+
   else
     $.post(rubyEvalRoot, snippet: snippet, (data, textStatus, xhr) ->
       $loadingIndicator.text ""
       $outputTarget.text data
-    ).fail ->
-      $loadingIndicator.text ""
-      $outputTarget.text snippetRequestError
+    ).fail OutputErrorShow
