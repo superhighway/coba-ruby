@@ -103,21 +103,12 @@ $(".btn-run").on 'click', ->
   snippet = SnippetEditorGetValue()
   $loadingIndicator.text "Memproses..."
 
-  OutputErrorShow = ->
+  $.post(rubyEvalRoot + "/coba-ruby.json", snippet: snippet, challenge_path: challengePath, (data, textStatus, xhr) ->
+    if challengeAnswerable && data.is_correct
+      ChallengeNavigateToPath data.next_challenge_path
+
+    $loadingIndicator.text ""
+    $outputTarget.text data.output
+  ).fail ->
     $loadingIndicator.text ""
     $outputTarget.text snippetRequestError
-
-  if challengeAnswerable
-    $.post(rubyEvalRoot + "/coba-ruby.json", snippet: snippet, challenge_path: challengePath, (data, textStatus, xhr) ->
-      if data.is_correct
-        ChallengeNavigateToPath data.next_challenge_path
-
-      $loadingIndicator.text ""
-      $outputTarget.text data.output
-    ).fail OutputErrorShow
-
-  else
-    $.post(rubyEvalRoot, snippet: snippet, (data, textStatus, xhr) ->
-      $loadingIndicator.text ""
-      $outputTarget.text data
-    ).fail OutputErrorShow
