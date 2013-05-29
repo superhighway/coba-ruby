@@ -1,4 +1,4 @@
-source :rubygems
+source 'http://rubygems.org'
 
 gem "redcarpet"
 gem "middleman", "~> 3.0.13"
