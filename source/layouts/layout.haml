@@ -4,6 +4,10 @@
     %title CobaRuby
     = stylesheet_link_tag "#{asset_root}/stylesheets/style.css", :media => "all"
   %body
+    :javascript
+      window.cookiePrefix = "#{cookie_prefix}";
+      window.rubyEvalRoot = "#{ruby_eval_root}";
+      window.challengeRoot = "#{challenge_root}";
     .header
       %h1 Coba Ruby, Yuk! [Sedang Dikerjakan]
       %span
@@ -31,7 +35,4 @@
     %script(type="text/plain" id="snippet-request-error-template") Ups! Maaf, lagi error... Coba lagi nanti, atau kontak thecatcyborg+jpruby@gmail.com melalui email. Terima kasih!
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"
     = javascript_include_tag "http://nyan.catcyb.org/mengenal-ruby/js/vendor/editor/ace.js", charset: "utf-8"
-    :javascript
-      window.rubyEvalRoot = "#{ruby_eval_root}";
-      window.challengeRoot = "#{challenge_root}";
     = javascript_include_tag "#{asset_root}/javascripts/all.js"

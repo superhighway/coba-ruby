@@ -1,3 +1,13 @@
+cookieKeyLastChallengePath = (cookiePrefix+'cr_last_path')
+if window.redirectToLastChallengePath
+  lastPath = $.cookie cookieKeyLastChallengePath
+  redirectPath = ""
+  if lastPath?
+    redirectPath = "tingkat/" + lastPath + ".html";
+  else
+    redirectPath = "tingkat/01/00.html";
+  window.location.href += redirectPath;
+
 # Extensions
 unless String::trim then String::trim = -> @replace /^\s+|\s+$/g, ""
 unless window.console and console.log
@@ -35,8 +45,11 @@ ChallengeInitialize = ->
       ChallengeNavigateToURL $(this).attr('href')
       return false
 
+
 popstateIsBoundToWindow = false
 ChallengeNavigateToURL = (challengeURL) ->
+  $.cookie cookieKeyLastChallengePath, challengePath, expires: 7, path: '/'
+
   if HistorySupportAvailable()
     unless popstateIsBoundToWindow
       popstateIsBoundToWindow = true
