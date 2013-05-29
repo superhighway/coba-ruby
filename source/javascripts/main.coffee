@@ -109,6 +109,8 @@ $(".btn-run").on 'click', ->
 
     $loadingIndicator.text ""
     $outputTarget.text data.output
-  ).fail ->
-    $loadingIndicator.text ""
-    $outputTarget.text snippetRequestError
+  ).fail (response, status, message) ->
+    $loadingIndicator.text ''
+    errorMessage = response.responseText
+    errorMessage = snippetRequestError if !errorMessage? || parseInt(response.status, 10) >= 500
+    $outputTarget.text errorMessage
