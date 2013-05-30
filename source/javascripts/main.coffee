@@ -39,6 +39,9 @@ ChallengeInitialize = ->
     challengePath = $jsChallenge.data('path')
     challengeAnswerable = $jsChallenge.data('answerable')
     challengeCapabilities = $jsChallenge.data('capabilities')
+    $b = $('body')
+    $b.removeClass()
+    $b.addClass challengeCapabilities.join('   ') if challengeCapabilities?
   $challengeCodePrefill = $ '#code-prefill'
   if $challengeCodePrefill? && $challengeCodePrefill.length > 0
     SnippetEditorSetValue $challengeCodePrefill.text().trim() + "\n# Ketik jawaban di bawah ini\n"
@@ -126,8 +129,30 @@ $(".btn-run").on 'click', ->
 
     $loadingIndicator.text ""
     $outputTarget.text data.output
+
+    if data.popups?
+      $popup = $("#popup")
+      $popup.empty()
+      for popup in data.popups
+        if popup.type == "CRURLResource"
+          $popup.append($('<iframe src="' + popup.url + '"></iframe>'))
+        else
+          $popup.append(popup.content)
+
   ).fail (response, status, message) ->
     $loadingIndicator.text ''
     errorMessage = response.responseText
     errorMessage = snippetRequestError if !errorMessage? || parseInt(response.status, 10) >= 500
     $outputTarget.text errorMessage
+
+$('.tab-button').on 'click', ->
+  $t = $ this
+  selectedClass = 'tab-button-selected'
+  unless $t.hasClass(selectedClass)
+    $t.addClass(selectedClass)
+  $t.siblings().removeClass(selectedClass)
+  $tab = $t.parent().parent()
+  $tab.find('.tab-item').hide()
+  $tab.find($t.data('show-selector')).show()
+
+$('.js-clear-popup').on 'click', -> $('#popup').empty()

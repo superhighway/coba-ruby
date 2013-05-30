@@ -9,7 +9,7 @@
       window.rubyEvalRoot = "#{ruby_eval_root}";
       window.challengeRoot = "#{challenge_root}";
     .header
-      %h1 Coba Ruby, Yuk! [Sedang Dikerjakan]
+      %h1 Coba Ruby, Yuk!
       %span
         Atau ke
         = link_to "Ruby Indonesia", 'http://id-ruby.org/', target: "_blank"
@@ -24,14 +24,27 @@
         - else
           = yield
       .pane.pane-right
-        #code-editor
-        .code-tools
-          .btn-run-wrapper
-            = link_to "Jalankan", 'javascript:;', class: "btn-run"
-          .code-output
-            %h4 Output
-            %pre
-              %code#run-output
+        .tab
+          .tab-buttons
+            = link_to "{}", "javascript:;", class: "tab-button tab-button-code tab-button-selected", "data-show-selector" => "#tab-code-editor"
+            = link_to "Popup", "javascript:;", class: "tab-button tab-button-popup", "data-show-selector" => "#tab-popup"
+          #tab-code-editor.tab-item.tab-item-selected
+            .code-editor-wrapper
+              #code-editor
+            .code-tools
+              .btn-run-wrapper
+                = link_to "Jalankan", 'javascript:;', class: "btn-run"
+              .code-output
+                %h4 Output
+                %pre
+                  %code#run-output
+          #tab-popup.tab-item
+            .popup-wrapper
+              %p
+                Ini Tempat Popup Keluar
+                = link_to "[Hapus Popup]", 'javascript:;', class: "js-clear-popup"
+              %hr
+              #popup
     %script(type="text/plain" id="snippet-request-error-template") Ups! Maaf, lagi error... Coba lagi nanti, atau kontak thecatcyborg+jpruby@gmail.com melalui email. Terima kasih!
     = javascript_include_tag "http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"
     = javascript_include_tag "http://nyan.catcyb.org/mengenal-ruby/js/vendor/editor/ace.js", charset: "utf-8"

@@ -29,7 +29,7 @@ h2, h3, h4, h5, p, ul, ol {
 }
 
 h1 {
-  margin: 0.8em 0 1em;
+  margin: 0.5em 0;
   font-variant: small-caps;
 }
 
@@ -96,20 +96,37 @@ code {
   font-size: 13px;
 }
 hr {
-  width: 540px;
   text-align: left;
   margin: 0 auto 0 0;
   color: #999;
+  border: 1px #ca8 dashed;
+}
+
+.tab-item, .code-editor-wrapper, #code-editor {
+  width: 550px;
+}
+
+.tab-buttons {
+  display: none;
+}
+
+body.popups .tab-buttons {
+  display: block;
+}
+
+.code-editor-wrapper, #code-editor {
+  height: 400px;
+}
+
+.code-editor-wrapper {
+  position: relative;
 }
 
 #code-editor {
-  width: 550px;
-  height: 400px;
   line-height: 1.6em;
 }
 
 .code-tools {
-  margin-top: 400px;
   width: 550px;
 }
 .btn-run-wrapper {
@@ -144,7 +161,52 @@ a.btn-run {
 }
 
 .panes {
+  width: 1190px;
   margin: 2.6em 0;
+}
+
+a.tab-button {
+  display: inline-block;
+  width: 50px;
+  text-align: center;
+  padding: 0.2em 0.5em;
+  text-decoration: none;
+
+  &:hover {
+    background: darken(#fbf1d3, 10%);
+    color: #333;
+  }
+}
+
+#tab-code-editor {
+  background: #fff;
+}
+
+#tab-popup {
+  font-size: 0.8em;
+}
+
+#popup {
+  iframe {
+    width: 100%;
+    height: 400px;
+  }
+}
+
+.tab-item, .code-editor-wrapper, .tab-button-selected {
+  background: #fbf1d3;
+}
+
+.tab-item {
+  display: none;
+}
+
+.popup-wrapper {
+  padding: 0.8em 0.9em;
+}
+
+.tab-item-selected {
+  display: block;
 }
 
 .pane {
