@@ -30,6 +30,7 @@ HistorySupportAvailable = -> !!(window.history && history.pushState)
 # Challenge
 challengePath = ''
 challengeAnswerable = false
+challengeCapabilities = null
 ChallengeInitialize = ->
   challengePath = ''
   challengeAnswerable = false
@@ -37,6 +38,7 @@ ChallengeInitialize = ->
   if $jsChallenge? && $jsChallenge.length > 0
     challengePath = $jsChallenge.data('path')
     challengeAnswerable = $jsChallenge.data('answerable')
+    challengeCapabilities = $jsChallenge.data('capabilities')
   $challengeCodePrefill = $ '#code-prefill'
   if $challengeCodePrefill? && $challengeCodePrefill.length > 0
     SnippetEditorSetValue $challengeCodePrefill.text().trim() + "\n# Ketik jawaban di bawah ini\n"
@@ -116,7 +118,9 @@ $(".btn-run").on 'click', ->
   snippet = SnippetEditorGetValue()
   $loadingIndicator.text "Memproses..."
 
-  $.post(rubyEvalRoot + "/coba-ruby.json", snippet: snippet, challenge_path: challengePath, (data, textStatus, xhr) ->
+  params = snippet: snippet, challenge_path: challengePath
+  params.capabilities = challengeCapabilities if challengeCapabilities? && challengeCapabilities.length > 0
+  $.post(rubyEvalRoot + "/coba-ruby.json", params, (data, textStatus, xhr) ->
     if challengeAnswerable && data.is_correct
       ChallengeNavigateToPath data.next_challenge_path
 

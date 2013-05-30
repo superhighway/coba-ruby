@@ -20,7 +20,7 @@
         - if (challenge_path = current_page.data["challenge_path"])
           = preserve do
             = yield
-          %span#js-challenge{ "data-path" => challenge_path, "data-answerable" => (!current_page.data["manual_continue"]).to_s }
+          %span#js-challenge{ "data-path" => challenge_path, "data-answerable" => (!current_page.data["manual_continue"]).to_s, "data-capabilities" => current_page.data["capabilities"] }
         - else
           = yield
       .pane.pane-right
