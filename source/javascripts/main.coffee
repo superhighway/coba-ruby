@@ -156,3 +156,18 @@ $('.tab-button').on 'click', ->
   $tab.find($t.data('show-selector')).show()
 
 $('.js-clear-popup').on 'click', -> $('#popup').empty()
+
+$('.js-share-facebook').on 'click', ->
+  sharer = "https://www.facebook.com/sharer/sharer.php?u=";
+  window.open(sharer + $(this).data('url'), 'sharer', 'width=626,height=436');
+
+$('.js-share-twitter').on 'click', ->
+  $t = $ this
+  sharer = "https://twitter.com/intent/tweet?"
+  params =
+    hashtags: $t.data('hashtags'),
+    original_referer: window.location.href,
+    text: "Coba Ruby, Yuk!",
+    tw_p: "tweetbutton",
+    url: $t.data('url')
+  window.open(sharer + $.param(params), 'sharer', 'width=626,height=436');

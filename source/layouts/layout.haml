@@ -8,13 +8,17 @@
       window.cookiePrefix = "#{cookie_prefix}";
       window.rubyEvalRoot = "#{ruby_eval_root}";
       window.challengeRoot = "#{challenge_root}";
+      window.shareURL = "#{share_url}";
     .header
       %h1 Coba Ruby, Yuk!
-      %span
+      %span.links-referring
         Atau ke
         = link_to "Ruby Indonesia", 'http://id-ruby.org/', target: "_blank"
         \/
         = link_to "Mengenal Ruby", 'http://nyan.catcyb.org/mengenal-ruby/', target: "_blank"
+        \/ Share di
+      = link_to "Facebook", 'javascript:;', class: "js-share-facebook share share-facebook", "data-url" => share_url
+      = link_to "Twitter", 'javascript:;', class: "js-share-twitter share share-twitter", "data-url" => share_url, "data-lang" => "id", "data-count" => "none", "data-hashtags" => "CobaRuby"
     .panes.clearfix
       #js-question.pane.pane-left
         - if (challenge_path = current_page.data["challenge_path"])

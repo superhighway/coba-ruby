@@ -291,3 +291,29 @@ a.btn-cta-coba-ruby {
 a.btn-cta-selanjutnya {
   @include btn-background(#3849f8);
 }
+
+a.share {
+  text-decoration: none;
+  display: inline-block;
+  width: 100px;
+  text-align: center;
+  color: #fff;
+}
+
+a.share-facebook {
+  background-color: #3b5998;
+  &:hover {
+    background-color: darken(#3b5998, 10%);
+  }
+}
+
+a.share-twitter {
+  background-color: #00acee;
+  &:hover {
+    background-color: darken(#00acee, 10%);
+  }
+}
+
+.links-referring {
+  margin-right: 0.3em;
+}

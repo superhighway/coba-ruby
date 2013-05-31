@@ -4,10 +4,13 @@
 
 # Time.zone = "UTC"
 
+host = "nyan.catcyb.org"
+set :share_url, "http://#{host}/coba-ruby/"
+
 if ENV["DEPLOY"]
   set :cookie_prefix, "prod_"
-  set :asset_root, "http://nyan.catcyb.org/coba-ruby"
-  set :challenge_root, "http://nyan.catcyb.org/coba-ruby/tingkat"
+  set :asset_root, "http://#{host}/coba-ruby"
+  set :challenge_root, "http://#{host}/coba-ruby/tingkat"
   set :ruby_eval_root, "http://mengenal-ruby-eval.herokuapp.com"
 else
   set :cookie_prefix, "dev_"
