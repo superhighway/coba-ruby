@@ -1,7 +1,13 @@
 !!!
-%html
+%html{ lang: "id" }
   %head
-    %title CobaRuby
+    %meta{ charset: "utf-8" }
+    %title
+      - if title = current_page.data["title"]
+        = title + " | "
+      CobaRuby
+    - meta_description = current_page.data["meta_description"] || default_meta_description
+    %meta{ name: "description", content: meta_description }
     = stylesheet_link_tag "#{asset_root}/stylesheets/style.css", :media => "all"
   %body
     :javascript

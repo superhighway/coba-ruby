@@ -6,6 +6,7 @@
 
 host = "nyan.catcyb.org"
 set :share_url, "http://#{host}/coba-ruby/"
+set :default_meta_description, "Punya 15 menit? Mari mencoba bahasa pemrograman Ruby sekarang! Kelebihan Ruby terletak pada kesederhanaannya dibalik kemampuannya."
 
 if ENV["DEPLOY"]
   set :cookie_prefix, "prod_"

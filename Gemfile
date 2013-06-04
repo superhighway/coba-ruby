@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem "colorize"
+gem "faraday"
 gem "redcarpet"
 gem "middleman", "~> 3.0.13"
 gem "middleman-deploy", "~> 0.0.12"
